@@ -41,6 +41,11 @@ esp_now_peer_info_t slave;
 #define ADCPOT1 33
 #define SDANALOG 150
 
+#define ADCSTICKX 34
+#define ADCSTICKY 35
+#define ADCSTICKCLICK 25
+
+
 // Init ESP Now with fallback
 void InitESPNow() {
   WiFi.disconnect();
@@ -242,13 +247,26 @@ int analog_read_mean(int pin,int millsecnd_wait,int number_of_samples)
 uint8_t data[10] = {0,10,20,30,40,50,60,70,80,90};
 // send data
 void sendData() {
+  data[1] = 8;
   int adc_value = analog_read_mean(ADCPOT1,1,5);;
-  Serial.print("adc_value: ");Serial.println(adc_value);
-  if (adc_value != -1 ) data[0] = adc_value >> 4;
-  data[1]++;
-  data[2]++;
-  data[3]++;
-  data[4]++;
+  Serial.print("POT: ");Serial.println(adc_value);
+  if (adc_value != -1 ) data[1] = adc_value >> 4;
+
+  adc_value = analog_read_mean(ADCSTICKX,1,5);;
+  Serial.print("X: ");Serial.println(adc_value);
+  if (adc_value != -1 ) data[2] = adc_value >> 4;
+  adc_value = analog_read_mean(ADCSTICKY,1,5);;
+  Serial.print("Y: ");Serial.println(adc_value);
+  if (adc_value != -1 ) data[3] = adc_value >> 4;
+   adc_value = digitalRead(ADCSTICKCLICK);
+  Serial.print("click: ");Serial.println(adc_value);
+  data[4] = adc_value ;
+  
+//  
+//  data[1]++;
+//  data[2]++;
+//  data[3]++;
+//  data[4]++;
   data[5]++;
   data[6]++;
   data[7]++;
@@ -302,6 +320,7 @@ void setup() {
   esp_now_register_recv_cb(OnDataRecv);
   ScanForSlave();
   analogSetPinAttenuation(ADCPOT1, ADC_11db);
+  pinMode(ADCSTICKCLICK, INPUT);
 }
 
 void loop() {

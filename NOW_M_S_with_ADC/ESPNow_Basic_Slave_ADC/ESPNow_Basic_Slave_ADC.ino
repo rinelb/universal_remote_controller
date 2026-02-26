@@ -76,7 +76,11 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 //    if (SERIAL_SEND == 1) {Serial.print(i == data_len - 1 ? '\n' : ' ');}
 //  }
 
-   Serial.println(data[0]);
+   Serial.print(data[1]);Serial.print(" ");
+   Serial.print(data[2]);Serial.print(" ");
+   Serial.print(data[3]);Serial.print(" ");
+   Serial.print(data[4]);Serial.println();
+   
 
   rememberMasterAndAddPeer(mac_addr);
 
